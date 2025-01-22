@@ -1,6 +1,24 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Astrologer Bot
+
+A Next.js-based chatbot that provides astrological insights and readings using AI technology.
+
+Live Demo: [https://astroseek-astrology-chat.vercel.app/](https://astroseek-astrology-chat.vercel.app/)
+
+## Features
+
+- AI-powered astrological readings
+- Modern, responsive user interface
+- Built with Next.js and OpenRouter API
 
 ## Getting Started
+
+First, set up your environment variables:
+
+1. Create a `.env.local` file in the root directory
+2. Add your OpenRouter API key:
+```env
+OPENROUTER_API_KEY=your_api_key_here
+```
 
 First, run the development server:
 
@@ -34,3 +52,4 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```
