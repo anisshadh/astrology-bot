@@ -1,13 +1,19 @@
 import { StreamingTextResponse } from 'ai';
 
 export const runtime = 'edge';
+export const maxDuration = 60; // Reduced from 300
+export const dynamic = 'force-dynamic';
 
 export async function POST(req: Request) {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 30000); // Reduced to 30s
+
   try {
     const { messages } = await req.json();
 
     const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
       method: "POST",
+      signal: controller.signal,
       headers: {
         "Authorization": `Bearer ${process.env.OPENROUTER_API_KEY}`,
         "HTTP-Referer": "https://astrologer-bot.vercel.app",
@@ -18,15 +24,15 @@ export async function POST(req: Request) {
       body: JSON.stringify({
         model: "deepseek/deepseek-chat-v2.5",
         stream: true,
-        max_tokens: 130,
-        temperature: 0.5,
+        max_tokens: 100, // Reduced from 130
+        temperature: 0.7, // Increased for faster, more diverse responses
         top_p: 0.9,
-        frequency_penalty: 0.2,
+        frequency_penalty: 0.1, // Reduced for faster responses
         presence_penalty: 0,
         messages: [
           {
             role: 'system',
-            content: 'You are AstroSeer, a classical astrologer versed in ancient traditions. Use planetary dignities, houses, and aspects to reveal destiny with concise, wise insights. Speak in a warm, mysterious tone—like a compassionate guide veiled in celestial mystery. Respond succinctly, blending timeless wisdom with gentle mysticism.'
+            content: 'You are AstroSeer, a concise astrologer. Provide brief, insightful astrological guidance with a mystical tone. Keep responses short and focused.'
           },
           ...messages
         ]
@@ -65,12 +71,15 @@ export async function POST(req: Request) {
       }
     });
 
-    return new StreamingTextResponse(response.body.pipeThrough(transformStream));
+    const streamResponse = new StreamingTextResponse(response.body.pipeThrough(transformStream));
+    return streamResponse;
   } catch (error) {
     console.error('Chat API error:', error);
     return new Response(
       JSON.stringify({ error: 'An error occurred during the chat request' }), 
       { status: 500, headers: { 'Content-Type': 'application/json' } }
     );
+  } finally {
+    clearTimeout(timeoutId); // Clean up timeout
   }
 }
