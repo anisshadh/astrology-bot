@@ -1,12 +1,12 @@
 import { StreamingTextResponse } from 'ai';
 
 export const runtime = 'edge';
-export const maxDuration = 60; // Reduced from 300
+export const maxDuration = 30;
 export const dynamic = 'force-dynamic';
 
 export async function POST(req: Request) {
   const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), 30000); // Reduced to 30s
+  const timeoutId = setTimeout(() => controller.abort(), 15000);
 
   try {
     const { messages } = await req.json();
@@ -24,15 +24,15 @@ export async function POST(req: Request) {
       body: JSON.stringify({
         model: "deepseek/deepseek-chat-v2.5",
         stream: true,
-        max_tokens: 100, // Reduced from 130
-        temperature: 0.7, // Increased for faster, more diverse responses
+        max_tokens: 80,
+        temperature: 0.6,
         top_p: 0.9,
-        frequency_penalty: 0.1, // Reduced for faster responses
+        frequency_penalty: 0.1,
         presence_penalty: 0,
         messages: [
           {
             role: 'system',
-            content: 'You are AstroSeer, a concise astrologer. Provide brief, insightful astrological guidance with a mystical tone. Keep responses short and focused.'
+            content: 'You are AstroSeer, a mystical astrologer. Provide quick, insightful astrological guidance with a warm tone. Keep responses concise and engaging.'
           },
           ...messages
         ]
